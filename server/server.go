@@ -9,7 +9,7 @@ import (
 
 var startTime time.Time = time.Now()
 
-func server() {
+func Server() {
 	e := gin.Default()
 	e.GET("/ping", func(ctx *gin.Context) {
 		if time.Since(startTime) < 5*time.Second {
