@@ -14,12 +14,13 @@ func main() {
 	// call with circuit breaker
 	cb := gobreaker.NewCircuitBreaker(
 		gobreaker.Settings{
-			Name:        "my-circuit-breaker",
+			Name:        "skeleton-digitalgoods-bff-circuit-breaker",
 			MaxRequests: 3,
 			Timeout:     3 * time.Second,
 			Interval:    1 * time.Second,
 			ReadyToTrip: func(counts gobreaker.Counts) bool {
-				return counts.ConsecutiveFailures > 3
+				failureRatio := float64(counts.TotalFailures) / float64(counts.Requests)
+				return counts.ConsecutiveFailures > 3 && failureRatio > 0.6
 			},
 			OnStateChange: func(name string, from gobreaker.State, to gobreaker.State) {
 				fmt.Printf("CircuitBreaker '%s' changed from '%s' to '%s'\n", name, from, to)
